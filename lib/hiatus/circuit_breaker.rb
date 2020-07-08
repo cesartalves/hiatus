@@ -17,7 +17,6 @@ module Hiatus
       @half_open_interval = half_open_interval || DEFAUTS[:half_open_interval]
 
       @state = state
-      @last_failure_timestamp = nil
     end
 
     def run &block
@@ -48,7 +47,8 @@ module Hiatus
 
     def trip_if_threshold_exceeded
       @state = :open if @threshold.reached?
-      @last_failure_timestamp = Time.now
+
+      refresh_last_failure_timestamp
     end
 
     def open?
@@ -62,17 +62,24 @@ module Hiatus
     def close
       @state = :closed
       @threshold.reset
-      @last_failure_timestamp = nil
+      last_failure_timestamp = nil
     end
 
     def half_open?
       open? && reached_retrial_threshold?
     end
 
-    private
+    protected
+
+    def refresh_last_failure_timestamp
+      @last_failure_timestamp = Time.now
+    end
 
     def reached_retrial_threshold?
-      @last_failure_timestamp && Time.now - @last_failure_timestamp > @half_open_interval
+      last_failure_timestamp && Time.now - last_failure_timestamp > @half_open_interval
     end
+
+    attr_accessor :last_failure_timestamp
+
   end
 end

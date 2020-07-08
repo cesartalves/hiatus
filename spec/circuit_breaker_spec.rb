@@ -30,6 +30,7 @@ RSpec.describe Hiatus::CircuitBreaker do
       end
 
       expect(circuit_breaker).to be_open
+      expect { circuit_breaker.run { } }.to raise_error Hiatus::CircuitBrokenError
     end
   end
 
@@ -65,29 +66,6 @@ RSpec.describe Hiatus::CircuitBreaker do
         circuit_breaker.run {  }
         expect(circuit_breaker).to be_closed
       end
-    end
-  end
-
-  describe "Adapter example" do
-    it "works" do
-      service = double()
-      allow(service).to receive(:call) { raise Net::ReadTimeout }
-
-      circuit_breaker = Hiatus::CircuitBreaker.new
-
-      adapter = double()
-      allow(adapter).to receive(:call) { circuit_breaker.run { service.call }}
-
-      5.times do
-        expect {
-          adapter.call
-        }.to raise_error Net::ReadTimeout
-      end
-
-      expect {
-        adapter.call
-      }.to raise_error Hiatus::CircuitBrokenError
-
     end
   end
 end

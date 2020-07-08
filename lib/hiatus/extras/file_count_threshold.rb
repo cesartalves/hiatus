@@ -1,4 +1,6 @@
 module Hiatus
+  # an example of threshold that could be stored somewhere
+  # file's really simple to implement.
   class FileCountThreshold < CountThreshold
     def initialize(file_path, threshold = 5)
       @file_path = file_path
@@ -11,7 +13,7 @@ module Hiatus
     end
 
     def reached?
-      failure_count, threshold = *JSON.parse(IO.binread(@file_path))
+      failure_count, threshold = *deserialize
       failure_count >= threshold
     end
 
@@ -22,10 +24,12 @@ module Hiatus
 
     private
 
+    def deserialize
+      JSON.parse IO.binread(@file_path)
+    end
+
     def serialize
       IO.binwrite @file_path, JSON.dump([@failure_count, @threshold])
     end
-
-    def touch; end;
   end
 end
