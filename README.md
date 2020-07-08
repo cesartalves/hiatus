@@ -1,28 +1,11 @@
-# CircuitBreaker
+# Hiatus
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/circuit_breaker`. To experiment with that code, run `bin/console` for an interactive prompt.
+Dead simple circuit breaker.
 
-TODO: Delete this and the text above, and describe your gem
+Once threshold is reached, will raise a `Hiatus:CircuitBrokenError` till `half_open_interval` passes
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'circuit_breaker'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install circuit_breaker
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 

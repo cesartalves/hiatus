@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "circuit_breaker"
+require "hiatus"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
