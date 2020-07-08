@@ -1,3 +1,4 @@
+require 'timecop'
 require 'httparty'
 
 RSpec.describe Hiatus::CircuitBreaker do
