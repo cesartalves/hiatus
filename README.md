@@ -1,10 +1,38 @@
 # Hiatus
 
-Dead simple circuit breaker.
+Dead simple circuit breaker pattern implementation. For future reference and talks :)
 
-Once threshold is reached, will raise a `Hiatus:CircuitBrokenError` till `half_open_interval` passes
+-
 
 ## Installation
+
+Add `gem 'hiatus', git: https://github.com/cesartalves/hiatus` to your Gemfile
+
+## Usage
+
+Once threshold is reached, will raise a `Hiatus:CircuitBrokenError` till `half_open_interval` passes. Then, it will half-open: a failed call trips the circuit again, a successful call closes it.
+
+```
+threshold = Hiatus::CountThreshold.new 5 # will be broken on the 5th failed attempt
+
+circuit_breaker = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 60 # after 60 seconds, circuit is apt to make calls again
+
+5.times do
+  circuit_breaker.run do
+    begin
+    # Http call raising error
+    rescue => e
+    end
+  end
+end
+
+circuit_breaker.run do
+  # any call
+end
+
+# => Hiatus:CircuitBrokenError
+
+```
 
 
 ## Development
