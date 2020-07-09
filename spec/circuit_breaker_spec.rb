@@ -24,9 +24,10 @@ RSpec.describe Hiatus::CircuitBreaker do
     it "will open if threshold is reached" do
 
       2.times do
-        expect {
+        begin
           circuit_breaker.run { raise Net::ReadTimeout }
-        }.to raise_error Net::ReadTimeout
+        rescue => e
+        end
       end
 
       expect(circuit_breaker).to be_open
@@ -53,7 +54,10 @@ RSpec.describe Hiatus::CircuitBreaker do
         expect(circuit_breaker).to be_half_open
 
         expect { circuit_breaker.run { raise 'Error' } }.to raise_error RuntimeError
+
         expect(circuit_breaker).to be_open
+
+        expect { circuit_breaker.run { raise 'Error' } }.to raise_error Hiatus::CircuitBrokenError
         end
       end
     end
