@@ -2,7 +2,7 @@
 
 Dead simple circuit breaker pattern implementation. For future reference and talks :)
 
--
+--
 
 ## Installation
 
@@ -12,7 +12,7 @@ Add `gem 'hiatus', git: https://github.com/cesartalves/hiatus` to your Gemfile
 
 Once threshold is reached, will raise a `Hiatus:CircuitBrokenError` till `half_open_interval` passes. Then, it will half-open: a failed call trips the circuit again, a successful call closes it.
 
-```
+```ruby
 threshold = Hiatus::CountThreshold.new 5 # will be broken on the 5th failed attempt
 
 circuit_breaker = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 60 # after 60 seconds, circuit is apt to make calls again
@@ -28,9 +28,7 @@ end
 
 circuit_breaker.run do
   # any call
-end
-
-# => Hiatus:CircuitBrokenError
+end # => Hiatus:CircuitBrokenError
 
 ```
 
