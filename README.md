@@ -1,8 +1,20 @@
 # Hiatus
 
-Dead simple circuit breaker pattern implementation. For future reference and talks :)
+* *noun:*
+  + *a pause or gap in a sequence, series, or process.*
+  + *A temporary gap, pause, break*
+
+Dead simple circuit breaker pattern implementation.
+
+Currently this is an unambitious project for future reference and talks. Thought the pattern was interesting and wanted to give it a shot :)
 
 --
+
+## Introduction
+
+This pattern helps applications which deal with calls to remote services. When they're unavailable, it prevents repeated calls which may cause cascading failure.
+
+Here is a great article about it: https://martinfowler.com/bliki/CircuitBreaker.html
 
 ## Installation
 
@@ -32,8 +44,28 @@ end # => Hiatus:CircuitBrokenError
 
 ```
 
+You can also include a Mixin in your class, since apparently this is what the ruby kids like. No idea why you'd like to tie your code to my little gem, but here it goes:
+
+```ruby
+ class Service
+
+  include Hiatus::Mixin
+
+  # this gives you great flexiblity on which circuit to use
+  # you can even have your classes sharing the same circuit breaker :)
+  circuit_factory -> { Hiatus::Circuits::CountCircuitBreaker.new threshold: 3 }
+
+  circuit_protected def call
+    raise 'Error'
+  end
+
+  # Check `spec/hiatus_mixin_spec.rb` for the full example
+
+```
 
 ## Development
+
+TODO: fill
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
@@ -41,10 +73,13 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
+TODO: fill
+
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/circuit_breaker. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/circuit_breaker/blob/master/CODE_OF_CONDUCT.md).
 
-
 ## License
+
+TODO: fill
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
