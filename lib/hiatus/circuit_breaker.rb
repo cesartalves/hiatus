@@ -16,7 +16,7 @@ module Hiatus
       @threshold = threshold || DEFAULT_THRESHOLD
       @half_open_interval = half_open_interval || DEFAUTS[:half_open_interval]
 
-      @state = state
+      @state = :closed
     end
 
     def run &block
@@ -61,7 +61,6 @@ module Hiatus
 
     def close
       @state = :closed
-      @threshold.reset
       last_failure_timestamp = nil
     end
 

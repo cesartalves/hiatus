@@ -1,12 +1,12 @@
 module Hiatus
   class PercentageThreshold
 
-    DEFAULT_PERCENTAGE = 50.0
+    DEFAULT_PERCENTAGE = 0.5
 
     def initialize(failure_percentage = DEFAULT_PERCENTAGE)
       @failure_percentage = failure_percentage
-      @failure_count = 0
-      @total_calls = 0
+      @failure_count = 0.0
+      @total_calls = 0.0
     end
 
     def increment
@@ -23,7 +23,7 @@ module Hiatus
     end
 
     def reached?
-      @failure_count / @total_calls
+      @failure_count / @total_calls > @failure_percentage
     end
 
   end
