@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hiatus (0.4.0)
+    circuit-hiatus (0.4.0)
 
 GEM
   remote: https://rubygems.org/
@@ -44,7 +44,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  hiatus!
+  circuit-hiatus!
   httparty
   pry
   rake (~> 12.0)

@@ -1,7 +1,7 @@
 require_relative 'lib/hiatus/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "hiatus"
+  spec.name          = "circuit-hiatus"
   spec.version       = Hiatus::VERSION
   spec.authors       = ["cesartalvez"]
   spec.email         = ["cesartalvez@gmail.com"]
@@ -11,8 +11,6 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/cesartalves"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
-
-  spec.metadata["allowed_push_host"] = " Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   # spec.metadata["source_code_uri"] = " Put your gem's public repo URL here."
