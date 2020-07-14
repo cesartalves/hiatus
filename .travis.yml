@@ -1,6 +1,26 @@
----
 language: ruby
 cache: bundler
 rvm:
-  - 2.7.1
+- 2.7.1
 before_install: gem install bundler -v 2.1.4
+after_script:
+- "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+before_script:
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- "./cc-test-reporter before-build"
+script:
+- bundle install
+- bundle exec rspec
+deploy:
+  provider: rubygems
+  api_key:
+    secure: ewdh0Teo5jGrIOmi8oMzHB4pUNaoHwS5tcJTIHzTlSXEqDkzRmf9QlVkRwQ3Fk6LWNw6zmipTPTQUvths6z0/qArg8Ga1aqf8NWSWNc7W+SiHKNl8bdKkcP623QSwjNq1icH8dK29/I4y+sociit+IrS+CbRMticiteLufHsJG+FrWtUOTdxBLseJF74kP7LlGBmPa7skCdxSxToJ0scs0CnP7fgeZj3J0gJ4XFtg2xrw70EWsWOQYM2Gp5i/2n8tvR/EgALu+UcVibQlduYt/wffEhkb7K3HYOrBJ0Zzzy8VUIwW/xNrGDfILkM96nGhVgjC/Z/xT+c7zmPDa0Kq9itRtEbt+BXfrF0AHevFdOoPIqSKc5BEnt5/jMnqf3hdkYAiwneq3AMkrsbybC9SNDXNTNyyWtiiyYyls4f5MHz4aGdjWVd+SMKRFhZxZwTNgRyPD8xi1q7Fdz4Gloz6Ih4IWYEe0FYgxD76SV8xZtK3j1SddVpacsGFCDKv4Xq28SKYyu0t9IL8ROEFqYR9QjXNazNwXwpqjTYLSKomKt9974Z6tJ/foUrC8b8IPUl+rjo0iFr90frFJD89vMnkuKoAN3vPfZAL/V68VsCf7rxZ72UMN5enkfk37AvsJW1a7Xfds7jNGwYIjsbkk1NimTZuQc4Ra5SFCZE/qjvj1M=
+  gem: circuit-hiatus
+  on:
+    tags: true
+    repo: cesartalves/hiatus
+env:
+  global:
+    secure: ICtEJMZcF9xb/jql10P9Uo0/JFgXl81NMOOP/fjAso3Oeo/EHxYpZHTRe6nc6QGREFATO+2l7cceObroANZL3WaGOPaSosRfB/sU3UWImXa47j22b/aRIWAx94tiD7InbGDYwk7KoUTZyfRXyV3rxTp/QrL84kivJmvrkB7UUzGGyAiqiJqsseIgXHxFufBoKIdE3ArAviQIrUkqBk4TtqZMCiDbAqcdk/4FNa2goSP2VsI3CzNpi4/hQ3Y9xvYJojbukTLeSbDKhMDSmjkWwpTn/2wvwjkdYZz5k8aGSY0+yR5L1wrRXEvjJHQGgfRwiPLQ6qbKzJsSMDysNUss2OoUocycIy/ElPseCohUroXh9ZxZZHtfOnw5rvKsGcSgKvIoiFPQ/Qh52gUXNPm40axIpsTR+ckRjpvtNA165ghLNoHvu1F8cXc+HjwmLtOdz46TZSAgEejpYKguWjNgq2b44SaOFlba7Mpq7EEu9DfdPu3F5wj7spugXIoFOL0r/JE1EeBM0ovSE0il4Ox3DfEPIIzvnxC8k3kB4CG5H9LVjjyfiXGcNvBr1aqaU5Ofmd01Cdo3EGoHN5iV8x6W8UCSJlI8RKeTcLu47FUfeGwEdwdZJ7U7K4YM7kxeV4cpSyAhDxF3OnSWH17cTxM809MW5zAuLsn+CbQkm+2L1Q4=
