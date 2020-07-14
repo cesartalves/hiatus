@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'httparty'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'timecop'
-  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'simplecov', '0.17.1'
 end
