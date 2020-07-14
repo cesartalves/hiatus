@@ -7,7 +7,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/f525ee829216ceed6006/maintainability)](https://codeclimate.com/github/cesartalves/hiatus/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f525ee829216ceed6006/test_coverage)](https://codeclimate.com/github/cesartalves/hiatus/test_coverage)
-[![Build Status](https://travis-ci.org/cesartalves/hiatus.svg?branch=master)](https://travis-ci.org/cesartalves/hiatus)
+[![Build Status](https://travis-ci.org/cesartalves/hiatus.svg)](https://travis-ci.org/cesartalves/hiatus)
 
 Dead simple circuit breaker pattern implementation.
 
