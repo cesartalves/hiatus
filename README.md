@@ -4,6 +4,11 @@
   + *a pause or gap in a sequence, series, or process.*
   + *A temporary gap, pause, break*
 
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/f525ee829216ceed6006/maintainability)](https://codeclimate.com/github/cesartalves/hiatus/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f525ee829216ceed6006/test_coverage)](https://codeclimate.com/github/cesartalves/hiatus/test_coverage)
+[![Build Status](https://travis-ci.org/cesartalves/hiatus.svg?branch=master)](https://travis-ci.org/cesartalves/hiatus)
+
 Dead simple circuit breaker pattern implementation.
 
 Currently this is an unambitious project for future reference and talks. Thought the pattern was interesting and wanted to give it a shot :)
