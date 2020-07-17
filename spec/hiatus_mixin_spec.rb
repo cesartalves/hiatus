@@ -13,6 +13,7 @@ RSpec.describe Hiatus::Mixin do
 
   it "works" do
     instance = Service.new
+
     2.times do
       instance.call rescue nil
     end
@@ -28,5 +29,15 @@ RSpec.describe Hiatus::Mixin do
     expect {
       instance.call
     }.to raise_error Hiatus::CircuitBrokenError
+  end
+
+  it "raises error if no factory is provided" do
+    service = Class.new do
+      include Hiatus::Mixin
+    end.new
+
+    expect {
+      service.class.circuit_protected :b
+    }.to raise_error described_class::ClassMethods::NoCircuitFactoryProvided
   end
 end

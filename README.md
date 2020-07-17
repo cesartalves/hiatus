@@ -23,13 +23,16 @@ Here is a great article about it: https://martinfowler.com/bliki/CircuitBreaker.
 
 ## Installation
 
-Add `gem 'hiatus', git: https://github.com/cesartalves/hiatus` to your Gemfile
+Add `gem 'circuit-hiatus'` to your Gemfile and `bundle install`, or `gem install circuit-hiatus`
 
 ## Usage
 
-Once threshold is reached, will raise a `Hiatus:CircuitBrokenError` till `half_open_interval` passes. Then, it will half-open: a failed call trips the circuit again, a successful call closes it.
+Once threshold is reached, the circuit will raise a `Hiatus:CircuitBrokenError` until `half_open_interval` passes. Then, it will half-open: a failed call trips the circuit again, a successful call closes it.
 
 ```ruby
+
+require 'hiatus' # not circuit-hiatus!
+
 threshold = Hiatus::CountThreshold.new 5 # will be broken on the 5th failed attempt
 
 circuit_breaker = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 60 # after 60 seconds, circuit is apt to make calls again
@@ -52,42 +55,105 @@ end # => Hiatus:CircuitBrokenError
 You can also include a Mixin in your class, since apparently this is what the ruby kids like. No idea why you'd like to tie your code to my little gem, but here it goes:
 
 ```ruby
- class Service
+require 'hiatus'
 
-  include Hiatus::Mixin
+class Service
 
-  # this gives you great flexiblity on which circuit to use
-  # you can even have your classes sharing the same circuit breaker :)
-  circuit_factory -> { Hiatus::Circuits::CountCircuitBreaker.new threshold: 3 }
+include Hiatus::Mixin
 
-  circuit_protected def call
-    raise 'Error'
-  end
+# this gives you great flexiblity on which circuit to use
+# you can even have your classes sharing the same circuit breaker :)
+circuit_factory -> { Hiatus::Circuits::CountCircuitBreaker.new threshold: 3 }
 
-  # Check `spec/hiatus_mixin_spec.rb` for the full example
+circuit_protected def call
+  raise 'Error'
+end
+
+# Check `spec/hiatus_mixin_spec.rb` for the full example
 
 ```
 
-## Development
+To configure a default factory:
 
-TODO: fill
+```ruby
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Hiatus::Mixin.config do |c|
+  c.default_circuit_factory = { Hiatus::Circuits::PercentageCircuitBreaker.new threshold: 0.5 }
+end
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+
+*Available Circuit types*
+
+- `Hiatus::Circuits::PercentageCircuitBreaker` => shorthand for circuit with threshold= `Hiatus::CountThreshold.new`. Opens once requests fails enough times
+
+- `Hiatus::Circuits::CountCircuitBreaker` => shorthand for circuit with threshold=  `Hiatus::PercentageThreshold.new`. Opens once failure percentage passes the given threshold
+
+## Advanced configuration
+
+You can easily create new instances of Threshold, so that they can be stored anywhere (database, redis, your dog's house - anything that responds to the interface), effectively creating a circuit breaker that can be used across applications:
+
+```ruby
+
+class RedisThreshold < CountThreshold
+  def initialize(options)
+
+  def increment
+    super
+    serialize
+  end
+
+  def reached?
+    failure_count, threshold = *deserialize
+    failure_count >= threshold
+  end
+
+  def reset
+    super
+    serialize
+  end
+
+  private
+
+  def deserialize
+    # get stuff from redis here
+  end
+
+  def serialize
+    # put stuff into redis here
+  end
+end
+
+threshold = RedisThreshold.new(url:, threshold: 15)
+
+redis_cb = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 90
+
+```
+
+You can find an example of a Threshold stored in a file in extras/file_count_threshold.rb
+
+## Possible improvements
+
+- Figure out why travis badge says error even though the build is passing ¬ ¬'
+
+- Create health-check mechanism to test connection once circuit has half-opened
 
 ## Contributing
 
-TODO: fill
+PRs are welcome :)
+- PRs must be 100% test-covered
+- PRs must please my code aesthetical preferences
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/circuit_breaker. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/circuit_breaker/blob/master/CODE_OF_CONDUCT.md).
+## Development
+
+After checking out the repo, run `bundle install` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## License
-
-TODO: fill
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the CircuitBreaker project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/circuit_breaker/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the CircuitBreaker project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/cesartalves/hiatus/blob/master/CODE_OF_CONDUCT.md).
