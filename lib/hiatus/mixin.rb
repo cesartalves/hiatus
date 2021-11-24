@@ -1,7 +1,7 @@
+# frozen_string_literal: true
+
 module Hiatus
-
   module Mixin
-
     class << self
       attr_accessor :default_circuit_factory
     end
@@ -15,14 +15,15 @@ module Hiatus
     end
 
     module ClassMethods
-
       class NoCircuitFactoryProvided < StandardError; end
 
       def circuit_factory(callable)
         @circuit_factory = callable || Hiatus::Mixin.default_circuit_factory
       end
 
-      def _circuit_factory_; @circuit_factory; end
+      def _circuit_factory_
+        @circuit_factory
+      end
 
       def circuit_break(method)
         raise NoCircuitFactoryProvided unless @circuit_factory
@@ -44,8 +45,7 @@ module Hiatus
         private :circuit_breaker
       end
 
-      alias_method :circuit_protected, :circuit_break
-
+      alias circuit_protected circuit_break
     end
   end
 end

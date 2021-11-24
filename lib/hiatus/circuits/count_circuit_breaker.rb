@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hiatus
   module Circuits
     class CountCircuitBreaker < Hiatus::CircuitBreaker
