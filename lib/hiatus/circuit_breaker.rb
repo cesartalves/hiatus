@@ -1,6 +1,14 @@
 module Hiatus
   class CircuitBrokenError < StandardError; end
 
+  module ThreadSafe
+    def run(&block)
+      # synchronizing such a large block might lead to performance disadvantages
+      @mx ||= Mutex.new
+      @mx.synchronize { super }
+    end
+  end
+
   class CircuitBreaker
     DEFAUTS = {
       threshold: 5,
@@ -16,23 +24,18 @@ module Hiatus
       @half_open_interval = half_open_interval || DEFAUTS[:half_open_interval]
 
       @state = :closed
-
-      @mx = Mutex.new
     end
 
     def run(&block)
-      # synchronizing such a large block might lead to performance disadvantages
-      @mx.synchronize do
-        raise CircuitBrokenError if open? && !reached_retrial_threshold?
+      raise CircuitBrokenError if open? && !reached_retrial_threshold?
 
-        begin
-          call_with_circuit_state_changes(&block)
-        rescue StandardError => e
-          increment_failure_count
-          trip_if_threshold_reached
+      begin
+        call_with_circuit_state_changes(&block)
+      rescue StandardError => e
+        increment_failure_count
+        trip_if_threshold_reached
 
-          raise e
-        end
+        raise e
       end
     end
 

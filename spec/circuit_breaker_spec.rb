@@ -5,6 +5,8 @@ require 'httparty'
 require 'open-uri'
 
 RSpec.describe Hiatus::CircuitBreaker do
+  described_class.prepend Hiatus::ThreadSafe
+
   let!(:threshold) { Hiatus::CountThreshold.new 2 }
 
   let(:open_circuit) do
