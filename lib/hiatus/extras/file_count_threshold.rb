@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hiatus
   # an example of threshold that could be stored somewhere
   # file's really simple to implement.
@@ -13,8 +15,8 @@ module Hiatus
     end
 
     def reached?
-      failure_count, threshold = *deserialize
-      failure_count >= threshold
+      @failure_count, @threshold = *deserialize
+      super
     end
 
     def reset

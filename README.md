@@ -130,7 +130,16 @@ redis_cb = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 
 
 ```
 
-You can find an example of a Threshold stored in a file in extras/file_count_threshold.rb
+You can find an example of a Threshold stored in a file in `extras/file_count_threshold.rb`
+
+### Thread safety
+
+A Circuit Breaker is not thread safe. If you want to use it in a multi-threaded environment, you need to use a mutex. Alternatively, you can use the `Hiatus::ThreadSafe` wrapper which will do that for you:
+
+```ruby
+# config/initializers/hiatus.rb
+Hiatus::CircuitBreaker.prepend Hiatus::ThreadSafe
+```
 
 ## Possible improvements
 

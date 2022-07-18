@@ -1,5 +1,6 @@
-RSpec.describe Hiatus::Mixin do
+# frozen_string_literal: true
 
+RSpec.describe Hiatus::Mixin do
   class Service
     include Hiatus::Mixin
 
@@ -8,36 +9,39 @@ RSpec.describe Hiatus::Mixin do
     circuit_protected def call
       raise 'Error'
     end
-
   end
 
-  it "works" do
+  it 'works' do
     instance = Service.new
 
     2.times do
-      instance.call rescue nil
+      instance.call
+    rescue StandardError
+      nil
     end
 
     expect(instance.send(:circuit_breaker)).to be_closed
 
-    1.times do
-      instance.call rescue nil
+    begin
+      instance.call
+    rescue StandardError
+      nil
     end
 
     expect(instance.send(:circuit_breaker)).to be_open
 
-    expect {
+    expect do
       instance.call
-    }.to raise_error Hiatus::CircuitBrokenError
+    end.to raise_error Hiatus::CircuitBrokenError
   end
 
-  it "raises error if no factory is provided" do
+  it 'raises error if no factory is provided' do
     service = Class.new do
       include Hiatus::Mixin
     end.new
 
-    expect {
+    expect do
       service.class.circuit_protected :b
-    }.to raise_error described_class::ClassMethods::NoCircuitFactoryProvided
+    end.to raise_error described_class::ClassMethods::NoCircuitFactoryProvided
   end
 end
