@@ -1,8 +1,9 @@
 module Hiatus
-  class CircuitBrokenError < StandardError; end
+  class CircuitBrokenError < StandardError
+    # attr_reader :till
+  end
 
   class CircuitBreaker
-
     DEFAUTS = {
       threshold: 5,
       half_open_interval: 5
@@ -10,8 +11,8 @@ module Hiatus
 
     DEFAULT_THRESHOLD = CountThreshold.new DEFAUTS[:threshold]
 
-    attr_reader :state
 
+    attr_reader :state
     def initialize(threshold: nil, half_open_interval: nil)
       @threshold = threshold || DEFAULT_THRESHOLD
       @half_open_interval = half_open_interval || DEFAUTS[:half_open_interval]
@@ -19,9 +20,11 @@ module Hiatus
       @state = :closed
     end
 
-    def run &block
-
-      raise CircuitBrokenError if open? && !reached_retrial_threshold?
+    def run(&block)
+      # thread synchronicity to be added on another PR
+      if open? && !reached_retrial_threshold?
+        raise CircuitBrokenError.new('Circuit Breaker is open', last_failure_timestamp)
+      end
 
       begin
         call_with_circuit_state_changes &block
@@ -79,6 +82,5 @@ module Hiatus
     end
 
     attr_accessor :last_failure_timestamp
-
   end
 end

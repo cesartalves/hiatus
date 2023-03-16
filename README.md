@@ -132,11 +132,21 @@ redis_cb = Hiatus::CircuitBreaker.new threshold: threshold, half_open_interval: 
 
 You can find an example of a Threshold stored in a file in extras/file_count_threshold.rb
 
+## Health-Checking
+
+You can use the `HealthCheck` class to verify the circuit's health on a given period of time in seconds
+
+
+```ruby
+  checker = Hiatus::HealthCheck.new(30).tick!
+
+
+  checker.healthy?(circuit)
+
+```
 ## Possible improvements
 
 - Figure out why travis badge says error even though the build is passing ¬ ¬'
-
-- Create health-check mechanism to test connection once circuit has half-opened
 
 ## Contributing
 

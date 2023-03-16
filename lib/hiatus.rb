@@ -9,3 +9,5 @@ require 'hiatus/circuits/count_circuit_breaker'
 require 'hiatus/circuits/percentage_circuit_breaker'
 
 require 'hiatus/mixin'
+
+require 'hiatus/health_checker'
